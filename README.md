@@ -7,6 +7,7 @@ Raspberry Pi runs a loop.  Each loop makes an ssh connection to a Linux
 Tester to run a test script.
 
 loop_test1.sh:
+```
 \#!/bin/bash -vx
 
 NUM_LOOP=3
@@ -24,6 +25,7 @@ for i in (1..$NUM_LOOPS); do
   power_off 
   sleep 60 # test1 should be off for a minimum of this many seconds to allow all hw devices to power off
 done
+```
 
 
 ## Linux Tester
@@ -33,6 +35,7 @@ date and time, iteration (number of times the test script has run),
 and test results.
 
 test1.sh:
+```
 \#!/bin/bash -vx
 
 LOG=log.txt
@@ -50,3 +53,4 @@ echo "test 3" | tee -a $LOG
 
 echo shutdown -h now" | tee -a $LOG
 \#shutdown -h now
+```
