@@ -7,15 +7,17 @@ Raspberry Pi runs a loop.  Each loop makes an ssh connection to a Linux
 Tester to run a test script.
 
 loop_test1.sh:
+\#!/bin/bash -vx
+
 NUM_LOOP=3
 for i in (1..$NUM_LOOPS); do
   echo "Iteration: $i of $NUM_LOOPS"
   date
   power_on
   sleep 120 # wait for ssh-server to start listening
-  # ssh-server must now be listening 
+  \# ssh-server must now be listening 
 
-  # time ssh $USER@127.0.0.1 "test1.sh" # run via ssh
+  \# time ssh $USER@127.0.0.1 "test1.sh" # run via ssh
   time ./test1.sh # run locally
 
   sleep 60 # test1.sh 'shutdown -h now' should be off before power_off is run
@@ -31,7 +33,7 @@ date and time, iteration (number of times the test script has run),
 and test results.
 
 test1.sh:
-#!/bin/bash -vx
+\#!/bin/bash -vx
 
 LOG=log.txt
 
@@ -47,4 +49,4 @@ echo "test 2" | tee -a $LOG
 echo "test 3" | tee -a $LOG
 
 echo shutdown -h now" | tee -a $LOG
-#shutdown -h now
+\#shutdown -h now
