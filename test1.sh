@@ -14,4 +14,6 @@ echo "test 2" | tee -a $LOG
 echo "test 3" | tee -a $LOG
 
 echo "shutdown -h now" | tee -a $LOG
-#shutdown -h now
+date | tee -a $LOG
+sudo shutdown -h now
+date | tee -a $LOG
