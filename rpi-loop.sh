@@ -1,18 +1,64 @@
 #!/bin/bash 
 
-NUM_LOOP=3
-for i in (1..$NUM_LOOPS); do
-  echo "Iteration: $i of $NUM_LOOPS"
+
+function wait_for_fping() {
+  local SSH_HOST=$1 # the hostname or IP address to ping
+  local FPING_RC=$2 # the return code to wait for
+
+  w=0
+  fping -c 1 ${SSH_HOST} > /dev/null 2>&1
+  RC=$?
+  while [ ${RC} -ne ${FPING_RC} ]; do
+    w=$((w+1))
+    echo -e -n "\b\b\b\b$w "
+    sleep 1  # Adjust the sleep interval as needed
+
+    fping -c 1 ${SSH_HOST} > /dev/null 2>&1
+    RC=$?
+  done
+
+  echo "fping -c 1 ${SSH_HOST} RC=${RC}" 
+} # wait_for_fping
+
+
+SSH_USER=rcpao
+SSH_HOST=ub24d-1t-mgef 
+SSH_ARP_A=$(arp -a ub24d-1t-mgef) # ub24d-1t-mgef.rs.paonet.org (172.18.128.200) at <incomplete> on eth0
+SSH_MAC=$(echo "$SSH_ARP_A" | cut -d ' ' -f 4) # <incomplete>
+
+NUM_LOOP=100
+
+for ((i=0; i < ${NUM_LOOP}; i++)); do
+  echo "Iteration: $i of ${NUM_LOOP}"
   date
   echo "Power ON"
   python rpi/ctrlOn.py
-  sleep 210 # wait for ssh-server to start listening
-  # ssh-server must now be listening 
 
-  time ssh rcpao@ub24d-1t-mgef bin/test1.sh
-  sleep 60 # test1.sh 'shutdown -h now' should be off before power_off is run
+  #sleep 210 # wait for ${SSH_HOST} to start listening
+  # wakeonlan ${SSH_MAC} # 40:8d:5c:5e:40:36 # must have transmitted an Ethernet packet to populate the ARP table
+  wakeonlan 40:8d:5c:5e:40:36
+  wait_for_fping ${SSH_HOST} 0
+  echo "Host ${SSH_HOST} replied to fping" 
+  # ${SSH_HOST} should now be listening 
 
+  if [[ $i -eq 1 ]]; then
+    time ssh ${SSH_USER}@${SSH_HOST} rm interval.txt log.txt
+  fi
+
+  time scp test1.sh ${SSH_USER}@${SSH_HOST}:bin/
+  time ssh ${SSH_USER}@${SSH_HOST} bin/test1.sh
+  #sleep 60 # test1.sh 'shutdown -h now' should be off before power_off is run
+  wait_for_fping ${SSH_HOST} 1
+  echo "Host ${SSH_HOST} did not reply to fping" 
+
+  set -x
   echo "Power OFF"
-  python rpi/ctrlOn.py
-  sleep 60 # test1 should be off for a minimum of this many seconds to allow all hw devices to power off
+  sleep 10 # test1 should be off for a minimum of this many seconds to allow all hw devices to bleed power off
+  python rpi/ctrlOff.py
+  sleep 10 # test1 should be off for a minimum of this many seconds to allow all hw devices to bleed power off
+  python rpi/ctrlOff.py
+  sleep 10 # test1 should be off for a minimum of this many seconds to allow all hw devices to bleed power off
+  set +x
 done
+
+echo "Iteration: $i of ${NUM_LOOP} done"

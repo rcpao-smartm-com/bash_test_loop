@@ -15,5 +15,7 @@ echo "test 3" | tee -a $LOG
 
 echo "shutdown -h now" | tee -a $LOG
 date | tee -a $LOG
-sudo shutdown -h now
-date | tee -a $LOG
+sudo shutdown -h now; date | tee -a $LOG
+  # /etc/sudoers.d/rcpao
+  # rcpao    ALL=(ALL:ALL) NOPASSWD:ALL
+
