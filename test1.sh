@@ -11,6 +11,16 @@ echo "Iteration: $ITERATION" | tee -a $LOG
 
 
 date | tee -a $LOG
+echo "lspci" # | tee -a $LOG
+LLOG=lspci.txt
+lspci > $LLOG 2>&1
+RC=$?
+[ ${RC} -ne 0 ] && echo "error: 'lspci' returned ${RC}" && exit ${RC}
+cat $LLOG
+cat $LLOG >> $LOG
+
+
+date | tee -a $LOG
 echo "lsmem" # | tee -a $LOG
 LLOG=lsmem.txt
 lsmem > $LLOG 2>&1
