@@ -47,18 +47,18 @@ RC=$?
 MLC=~/Downloads/mlc_v3.10/Linux/mlc
 
 date | tee -a $LOG
-echo "numactl --membind=0 $MLC"
+echo "time numactl --membind=0 $MLC"
 LLOG=numactl_--membind=0_mlc.txt
-numactl --membind=0 $MLC > $LLOG 2>&1
+time numactl --membind=0 $MLC > $LLOG 2>&1
 RC=$?
 [ ${RC} -ne 0 ] && echo "error: \"numactl --membind=0 $MLC\" returned ${RC}" && exit ${RC}
 cat $LLOG
 cat $LLOG >> $LOG
 
 date | tee -a $LOG
-echo "numactl --membind=1 $MLC"
+echo "time numactl --membind=1 $MLC"
 LLOG=numactl_--membind=1_mlc.txt
-numactl --membind=1 $MLC > $LLOG 2>&1
+time numactl --membind=1 $MLC > $LLOG 2>&1
 RC=$?
 [ ${RC} -ne 0 ] && echo "error: \"numactl --membind=1 $MLC\" returned ${RC}" && exit ${RC}
 cat $LLOG
