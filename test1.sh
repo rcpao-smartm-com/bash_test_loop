@@ -13,16 +13,17 @@ echo "Iteration: $ITERATION" | tee -a $LOG
 date | tee -a $LOG
 echo "lsmem" # | tee -a $LOG
 LLOG=lsmem.txt
-lsmem > $LLOG
+lsmem > $LLOG 2>&1
 RC=$?
 [ ${RC} -ne 0 ] && echo "error: 'lsmem' returned ${RC}" && exit ${RC}
 cat $LLOG
 cat $LLOG >> $LOG
 
+
 date | tee -a $LOG
 echo "numactl -H" # | tee -a $LOG
 LLOG=numactl_-H.txt
-numactl -H > $LLOG
+numactl -H > $LLOG 2>&1
 RC=$?
 [ ${RC} -ne 0 ] && echo "error: 'numactl -H' returned ${RC}" && exit ${RC}
 cat $LLOG
@@ -31,26 +32,29 @@ grep "node 1" $LLOG >> $LOG
 RC=$?
 [ ${RC} -ne 0 ] && echo "error: \'grep \"node 1\" $LLOG\' returned ${RC}" && exit ${RC}
 
-: <<'EOF'
+
+#: <<'EOF'
 MLC=~/Downloads/mlc_v3.10/Linux/mlc
+
 date | tee -a $LOG
 echo "numactl --membind=0 $MLC"
 LLOG=numactl_--membind=0_mlc.txt
-numactl --membind=0 $MLC > $LLOG
+numactl --membind=0 $MLC > $LLOG 2>&1
 RC=$?
-[ ${RC} -ne 0 ] && echo "error: 'numactl -H' returned ${RC}" && exit ${RC}
+[ ${RC} -ne 0 ] && echo "error: \"numactl --membind=0 $MLC\" returned ${RC}" && exit ${RC}
 cat $LLOG
 cat $LLOG >> $LOG
 
 date | tee -a $LOG
 echo "numactl --membind=1 $MLC"
-numactl --membind=1 $MLC > $LLOG
-RC=$?
-[ ${RC} -ne 0 ] && echo "error: 'numactl -H' returned ${RC}" && exit ${RC}
 LLOG=numactl_--membind=1_mlc.txt
+numactl --membind=1 $MLC > $LLOG 2>&1
+RC=$?
+[ ${RC} -ne 0 ] && echo "error: \"numactl --membind=1 $MLC\" returned ${RC}" && exit ${RC}
 cat $LLOG
 cat $LLOG >> $LOG
-EOF
+#EOF
+
 
 # echo "test 1" | tee -a $LOG
 # echo "test 2" | tee -a $LOG
