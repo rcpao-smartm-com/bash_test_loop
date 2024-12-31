@@ -73,27 +73,25 @@ SSH_HOST=ub24d-1t-mgef
   # wakeonlan does not turn on Gigabyte GA-Z97X-Gaming_7 
   # wakeonlan does not have an equivalent to power off; thus, wakeonlan is not useful for power cycle testing
 EOF
-: <<'EOF'
+#: <<'EOF'
 SSH_USER=smart
-SSH_HOST=fw40-070x 
-EOF
-# : <<'EOF'
-SSH_USER=smart
-SSH_HOST=deb12-8-0-067x
-# EOF
+#SSH_HOST=fw40-070x 
+#SSH_HOST=deb12-8-0-067x
+SSH_HOST=ub24d-900g-00EX
+#EOF
 
-# : <<'EOF'
+: <<'EOF'
 BMC_IP="172.18.128.103" # 7C:C2:55:E6:F6:FC # Supermicro X14SBM-TF, CXL 2.0
 BMC_USER="ADMIN"
 BMC_PW="TGRMCKRDBV"
-# EOF
-: <<'EOF'
+EOF
+#: <<'EOF'
 BMC_IP="172.18.128.55" # 3c:ec:ef:d9:75:38 # Supermicro X13SEM-F
 BMC_USER="ADMIN"
 BMC_PW="ITUDHIWUYO"
-EOF
+#EOF
 
-NUM_LOOP=2
+NUM_LOOP=1000
 
 sudo apt -y install fping wakeonlan ipmitool
 
