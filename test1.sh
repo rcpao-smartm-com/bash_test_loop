@@ -11,9 +11,9 @@ echo "Iteration: $ITERATION" | tee -a $LOG
 
 
 date | tee -a $LOG
-echo "lspci" # | tee -a $LOG
+echo "lspci | grep CXL" # | tee -a $LOG
 LLOG=lspci.txt
-lspci > $LLOG 2>&1
+lspci | grep CXL > $LLOG 2>&1
 RC=$?
 [ ${RC} -ne 0 ] && echo "error: 'lspci' returned ${RC}" && exit ${RC}
 cat $LLOG
