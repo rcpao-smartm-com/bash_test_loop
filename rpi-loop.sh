@@ -91,7 +91,7 @@ BMC_USER="ADMIN"
 BMC_PW="ITUDHIWUYO"
 #EOF
 
-NUM_LOOP=1000
+NUM_LOOP=2 # 1000
 
 sudo apt -y install fping wakeonlan ipmitool
 
@@ -130,11 +130,11 @@ for ((i=0; i < ${NUM_LOOP}; i++)); do
   RC=$?
   [ ${RC} -ne 0 ] && exit ${RC}
 
-  if [[ $i -eq 1 ]]; then
-    time ssh ${SSH_USER}@${SSH_HOST} rm interval.txt log.txt
+  if [[ $i -eq 0 ]]; then
+    time ssh ${SSH_USER}@${SSH_HOST} rm iteration.txt log.txt
   fi
 
-  ssh ${SSH_USER}@${SSH_HOST} bin/test1.sh
+  time ssh ${SSH_USER}@${SSH_HOST} bin/test1.sh
 
   #sleep 60 # test1.sh 'shutdown -h now' should be off before power_off is run
   wait_for_fping ${SSH_HOST} 1
